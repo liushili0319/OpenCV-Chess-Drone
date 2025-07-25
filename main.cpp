@@ -43,6 +43,11 @@ void tiempo(LARGE_INTEGER *);
 void frecuencia(LARGE_INTEGER *);
 double diferencia_tiempo(TIMER t2, TIMER t1);
 
+// Utility functions for converting nested structures to string format
+string doubleArrayToString(const vector<double>& arr);
+string listOfDoubleArraysToString(const vector<vector<double>>& list);
+string listOfListsToString(const vector<vector<vector<double>>>& split);
+
 //--------------------------------------------------------------
 class SuperSock
 {
@@ -237,6 +242,18 @@ Mat templ_tablero_vacio = imread( "C:/Ejecutables/templ_tablero_vacio.jpg", CV_L
 #ifdef peque
 resize(templ_tablero_vacio, templ_tablero_vacio,Size(), factor,factor);
 #endif
+
+// Example usage of List<List<double[]>> to string conversion
+// Create a sample data structure equivalent to List<List<double[]>>
+vector<vector<vector<double>>> split = {
+    {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}},
+    {{7.0, 8.0, 9.0}, {10.0, 11.0, 12.0}},
+    {{13.0, 14.0, 15.0}}
+};
+
+// Convert to string format
+string splitString = listOfListsToString(split);
+cout << "List<List<double[]>> as string: " << splitString << endl;
 
 bool blancas = true; //es para la oscilacion
 imshow("Control", control);
@@ -501,5 +518,46 @@ void frecuencia(LARGE_INTEGER *miFrecuencia)
 double diferencia_tiempo(TIMER t2, TIMER t1) {
    double t21 = static_cast<double>(t2.QuadPart - t1.QuadPart) / frequency.QuadPart;
    return t21;
+}
+
+// Implementation of utility functions for converting nested structures to string format
+
+// Convert a single vector<double> to string format like [1.0, 2.0, 3.0]
+string doubleArrayToString(const vector<double>& arr) {
+    string result = "[";
+    for (size_t i = 0; i < arr.size(); ++i) {
+        result += to_string(arr[i]);
+        if (i < arr.size() - 1) {
+            result += ", ";
+        }
+    }
+    result += "]";
+    return result;
+}
+
+// Convert vector<vector<double>> to string format like [[1.0, 2.0], [3.0, 4.0]]
+string listOfDoubleArraysToString(const vector<vector<double>>& list) {
+    string result = "[";
+    for (size_t i = 0; i < list.size(); ++i) {
+        result += doubleArrayToString(list[i]);
+        if (i < list.size() - 1) {
+            result += ", ";
+        }
+    }
+    result += "]";
+    return result;
+}
+
+// Convert List<List<double[]>> equivalent (vector<vector<vector<double>>>) to string format like [[[1.0, 2.0], [3.0, 4.0]], [[5.0, 6.0], [7.0, 8.0]]]
+string listOfListsToString(const vector<vector<vector<double>>>& split) {
+    string result = "[";
+    for (size_t i = 0; i < split.size(); ++i) {
+        result += listOfDoubleArraysToString(split[i]);
+        if (i < split.size() - 1) {
+            result += ", ";
+        }
+    }
+    result += "]";
+    return result;
 }
 
